@@ -49,5 +49,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EkkalakChimjan.Standard52Card\EkkalakChimjan.Standard52Card.csproj">
+      <Project>{220782df-33f0-461a-8f48-b8e026103f53}</Project>
+      <Name>EkkalakChimjan.Standard52Card</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

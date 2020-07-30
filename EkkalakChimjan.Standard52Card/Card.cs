@@ -7,7 +7,7 @@ namespace EkkalakChimjan.Standard52Card
 	}
 	public class Card
 	{
-		private int value;
+		private readonly int value;
 
 		public CardSuit Suit { get; }
 		public int Value
