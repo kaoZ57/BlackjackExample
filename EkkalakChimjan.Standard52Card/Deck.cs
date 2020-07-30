@@ -28,6 +28,7 @@ namespace EkkalakChimjan.Standard52Card
 			nextCard = cards.Length;
 			Shuffle();
 		}
+
 		public bool Shuffle(int times = 60)
 		{
 			if (nextCard != cards.Length)
