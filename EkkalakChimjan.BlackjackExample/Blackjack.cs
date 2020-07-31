@@ -8,10 +8,6 @@ namespace EkkalakChimjan.BlackjackExample
     {
         readonly List<Player> players;
         Deck deck;
-        public Blackjack()
-        {
-            players = new List<Player>();
-        }
 
         public Blackjack(List<Player> players)
         {
