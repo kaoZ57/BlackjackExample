@@ -11,8 +11,9 @@ namespace EkkalakChimjan.BlackjackExample
     {
         static void Main(string[] args)
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
             Deck d = new Deck();
-            Player p = new Player();
+            Player p = new Player("Tuu");
             p.AddHand();
             Hand h = p.GetHand(0);
             h.SetBet(300);
@@ -20,7 +21,8 @@ namespace EkkalakChimjan.BlackjackExample
             h.AddCard(d.Deal());
 
             Console.WriteLine(h.textShowOneCard);
-            bool a = h.isStay(Hand.PlayerLogic);
+            Console.WriteLine(h.ToString());
+            bool a = h.isStay(Hand.AILogic);
             Console.WriteLine(a);
             Console.WriteLine(p.ToString());
         }

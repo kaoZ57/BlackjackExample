@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Blackjack.cs" />
     <Compile Include="Hand.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />

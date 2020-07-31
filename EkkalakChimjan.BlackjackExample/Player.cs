@@ -1,5 +1,4 @@
-﻿using EkkalakChimjan.Standard52Card;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace EkkalakChimjan.BlackjackExample
 {
@@ -21,14 +20,16 @@ namespace EkkalakChimjan.BlackjackExample
                 new Hand(this,"1")
             };
         }
+
         public void AddMoney(int amount)
         {
             Money += amount;
         }
+
         public void AddHand()
         {
             string name = (handList.Count + 1).ToString();
-            handList.Add(new Hand(this,name));
+            handList.Add(new Hand(this, name));
         }
 
         public Hand GetHand(int index)
@@ -51,11 +52,12 @@ namespace EkkalakChimjan.BlackjackExample
             }
             return null;
         }
+
         public override string ToString()
         {
-            string returnText = string.Format("=================\n Name:{0}\n",Name);
-            returnText += string.Format(" Balance: {0}\n",Money);
-            returnText += string.Format(" Number of hands: {0}\n",NumberOfHands);
+            string returnText = string.Format("=================\n Name:{0}\n", Name);
+            returnText += string.Format(" Balance: {0}\n", Money);
+            returnText += string.Format(" Number of hands: {0}\n", NumberOfHands);
             returnText += "=================";
             return returnText;
         }
