@@ -12,19 +12,16 @@ namespace EkkalakChimjan.BlackjackExample
         static void Main(string[] args)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-            Deck d = new Deck();
-            Player p = new Player("Tuu");
-            p.AddHand();
-            Hand h = p.GetHand(0);
-            h.SetBet(300);
-            h.AddCard( d.Deal());
-            h.AddCard(d.Deal());
+            Player dealer = new Player("Dealer");
+            List<Player> players = new List<Player>();
+            players.Add(new Player("Tuu"));
+            players.Add(new Player("Pom"));
 
-            Console.WriteLine(h.textShowOneCard);
-            Console.WriteLine(h.ToString());
-            bool a = h.isStay(Hand.AILogic);
-            Console.WriteLine(a);
-            Console.WriteLine(p.ToString());
+            Deck deck = new Deck();
+            Blackjack gamePlay = new Blackjack(dealer,players, deck);
+
+            gamePlay.Play();
+            //gamePlay.AllPlayerShowHands();
         }
     }
 }

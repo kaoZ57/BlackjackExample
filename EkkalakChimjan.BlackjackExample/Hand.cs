@@ -11,6 +11,7 @@ namespace EkkalakChimjan.BlackjackExample
 
         public int Bet { get; set; }
         public string Name { get; }
+        public string FullName => string.Format("{0}'s hand \"{1}\"", player.Name, Name);
         public bool Stay { get; set; }
 
         public Hand(Player player, string name)
