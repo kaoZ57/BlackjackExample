@@ -17,6 +17,9 @@ namespace EkkalakChimjan.BlackjackExample
             Hand h = p.GetHand(0);
             h.SetBet(300);
             h.AddCard( d.Deal());
+            h.AddCard(d.Deal());
+
+            Console.WriteLine(h.textShowOneCard);
             bool a = h.isStay(Hand.PlayerLogic);
             Console.WriteLine(a);
             Console.WriteLine(p.ToString());

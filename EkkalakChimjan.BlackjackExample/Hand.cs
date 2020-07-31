@@ -90,26 +90,33 @@ namespace EkkalakChimjan.BlackjackExample
         public override string ToString()
         {
             string line = "------------------------------";
-            string returnText = string.Format("{0}\n Cards in {1}'s hand \"{2}\" (Bet: {3})\n", line, player.Name, Name, Bet);
-            CardList.ForEach(card => returnText += string.Format("  {0},  ", card.ToString()));
-            returnText += string.Format("\n  Total : {0} Points", Point);
+            string returnText = string.Format("{0}\n {1}'s hand \"{2}\"\n", line, player.Name, Name);
+            returnText += string.Format("  -Bet : {3}\n  -Cards :", line, player.Name, Name, Bet);
+            CardList.ForEach(card => returnText += string.Format("  {0},", card.ToString()));
+            returnText = returnText.TrimEnd(',');
+            returnText += string.Format("\n  -Total :  {0} Points", Point);
             return returnText;
         }
 
-        public void ShowOneCard()
+        public string textShowOneCard
         {
-            string text = "------------------------------\n";
-            text += string.Format("Cards in {0}'s hand \"{1}\"\n", player.Name, Name);
-            for (int i = 0; i < CardList.Count; i++)
+            get
             {
-                if (i == 0)
+                string text = "------------------------------\n";
+                text += string.Format(" {0}'s hand \"{1}\"\n", player.Name, Name);
+                text += string.Format("  -Cards :  ", player.Name, Name);
+                for (int i = 0; i < CardList.Count; i++)
                 {
-                    text += string.Format("  {0}\n", CardList[i].ToString());
+                    if (i == 0)
+                    {
+                        text += string.Format("{0}  ", CardList[i].ToString());
+                    }
+                    else
+                    {
+                        text += ",[?]  ";
+                    }
                 }
-                else
-                {
-                    text += "  [?],  \n";
-                }
+                return text;
             }
         }
 
