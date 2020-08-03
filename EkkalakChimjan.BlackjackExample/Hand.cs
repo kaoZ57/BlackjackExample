@@ -7,50 +7,71 @@ namespace EkkalakChimjan.BlackjackExample
     internal class Hand
     {
         private Player player;
+        public Player Player => player;
         public List<Card> CardList { get; private set; }
-
-        public int Bet { get; set; }
-        public string Name { get; }
-        public string FullName => string.Format("{0}'s hand \"{1}\"", player.Name, Name);
+        public int Point { get; private set; }
+        public uint Bet { get; set; }
+        public string Name { get; set; }
+        //public string FullName => string.Format("{0}'s hand \"{1}\"", player.Name, Name);
         public bool Stay { get; set; }
+        public int NumberOfCards => CardList.Count;
 
-        public Hand(Player player, string name)
+        internal void init()
         {
-            this.player = player;
-            Stay = false;
-            Name = name;
+            CardList.Clear();
+            Point = 0;
             Bet = 0;
-            CardList = new List<Card>();
+            Stay = false;
         }
 
-        public bool SetBet(int money)
+        public delegate void Logic(Hand hand);
+
+        public Hand(Player player)
         {
-            if (player.Money < money || money < 1)
+            this.player = player;
+            Name = string.Format("{0}'s hand", player.Name);
+            CardList = new List<Card>();
+            init();
+        }
+
+        public bool isValidPoint
+        {
+            get => (Point >= 17 && Point <= 21);
+        }
+
+        public void AddCard(Card card, bool ShowCard = false)
+        {
+            Point += card.Value;
+            CardList.Add(card);
+            if (ShowCard)
+            {
+                Console.WriteLine("{0} get {1}",Name,card.ToString());
+            }
+        }
+
+        
+
+        public bool SetBet(uint money)
+        {
+            if (player.Money < money)
             {
                 return false;
             }
             Bet += money;
-            player.AddMoney(money * -1);
+            player.AddMoney((int)money * -1);
             return true;
         }
 
-        public void AddCard(Card card)
+        
+
+        static public void printStayText(string handName)
         {
-            CardList.Add(card);
+            Console.WriteLine("{0} stay !",  handName);
         }
 
-        public int NumberOfCards => CardList.Count;
-
-        public delegate void Logic(Hand hand);
-
-        static public void printStayText(string playerName, string handName)
+        static public void printNotStayText(string handName)
         {
-            Console.WriteLine("The {0}'s hand \"{0}\" stay !", playerName, handName);
-        }
-
-        static public void printNotStayText(string playerName, string handName)
-        {
-            Console.WriteLine("The {0}'s hand \"{1}\" want one more cards !", playerName, handName);
+            Console.WriteLine("{0} want one more cards !",  handName);
         }
 
         public static void AILogic(Hand hand)
@@ -58,12 +79,12 @@ namespace EkkalakChimjan.BlackjackExample
             if (hand.Point >= 17)
             {
                 hand.Stay = true;
-                Hand.printStayText(hand.player.Name, hand.Name);
+                Hand.printStayText(hand.Name);
             }
             else
             {
                 hand.Stay = false;
-                Hand.printNotStayText(hand.player.Name, hand.Name);
+                Hand.printNotStayText( hand.Name);
             }
         }
 
@@ -74,11 +95,11 @@ namespace EkkalakChimjan.BlackjackExample
             hand.Stay = Console.ReadLine().ToLower() == "y";
             if (hand.Stay)
             {
-                Hand.printStayText(hand.player.Name, hand.Name);
+                Hand.printStayText( hand.Name);
             }
             else
             {
-                Hand.printNotStayText(hand.player.Name, hand.Name);
+                Hand.printNotStayText(hand.Name);
             }
         }
 
@@ -91,8 +112,8 @@ namespace EkkalakChimjan.BlackjackExample
         public override string ToString()
         {
             string line = "------------------------------";
-            string returnText = string.Format("{0}\n {1}'s hand \"{2}\"\n", line, player.Name, Name);
-            returnText += string.Format("  -Bet : {3}\n  -Cards :", line, player.Name, Name, Bet);
+            string returnText = string.Format("{0}\n {1}\n", line,  Name);
+            returnText += string.Format("  -Bet : {0}\n  -Cards :", Bet);
             CardList.ForEach(card => returnText += string.Format("  {0},", card.ToString()));
             returnText = returnText.TrimEnd(',');
             returnText += string.Format("\n  -Total :  {0} Points", Point);
@@ -104,8 +125,8 @@ namespace EkkalakChimjan.BlackjackExample
             get
             {
                 string text = "------------------------------\n";
-                text += string.Format(" {0}'s hand \"{1}\"\n", player.Name, Name);
-                text += string.Format("  -Cards :  ", player.Name, Name);
+                text += string.Format(" {0}\n", Name);
+                text += string.Format("  -Cards :  ");
                 for (int i = 0; i < CardList.Count; i++)
                 {
                     if (i == 0)
@@ -120,15 +141,7 @@ namespace EkkalakChimjan.BlackjackExample
                 return text;
             }
         }
-
-        public int Point
-        {
-            get
-            {
-                int point = 0;
-                CardList.ForEach(card => { point += card.Value; });
-                return point;
-            }
-        }
+        
+        
     }
 }

@@ -1,137 +1,195 @@
 ﻿using EkkalakChimjan.Standard52Card;
+using System;
+using System.CodeDom;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace EkkalakChimjan.BlackjackExample
 {
     internal class Blackjack
     {
         private readonly List<Player> players;
+        private readonly List<Hand> allPlayerHands;
         private Player dealer;
         private readonly Deck deck;
-        private int numbersOfPlayerHandsInGame;
 
-        public Blackjack(Player dealer, List<Player> players, Deck deck)
+        public Blackjack(string dealerName, Deck deck)
         {
-            numbersOfPlayerHandsInGame = 0;
-            this.dealer = dealer;
-            this.players = players;
+            this.dealer = new Player(dealerName);
+            this.players = new List<Player>();
+            this.allPlayerHands = new List<Hand>();
             this.deck = deck;
+        }
+
+        public void AddPlayer(Player player)
+        {
+            players.Add(player);
+        }
+
+        private void initialCard()
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                allPlayerHands.ForEach(hand => hand.AddCard(deck.Deal()));
+                dealer.GetHand(0).AddCard(deck.Deal());
+            }
+        }
+
+        private void moreCard()
+        {
+            Console.Clear();
+            System.Console.WriteLine(dealer.GetHand(0).textShowOneCard);
+            int countStay = 0;
+            while (countStay < allPlayerHands.Count)
+            {
+                foreach (var hand in allPlayerHands)
+                {
+                    if (!hand.Stay && !hand.isStay(Hand.PlayerLogic))
+                    {
+                        hand.AddCard(deck.Deal(), true);
+                    }
+                    else
+                    {
+                        countStay++;
+                    }
+                }
+            }
+            while (!dealer.GetHand(0).Stay && !dealer.GetHand(0).isStay(Hand.AILogic))
+            {
+                dealer.GetHand(0).AddCard(deck.Deal(), true);
+            }
+        }
+
+        private void battle()
+        {
+            Console.Clear();
+            System.Console.WriteLine(dealer.GetHand(0).ToString());
+            System.Console.WriteLine("------------------------\n");
+            foreach (var playerHand in allPlayerHands)
+            {
+                if (playerHand.isValidPoint && !dealer.GetHand(0).isValidPoint)
+                {
+                    isWin(playerHand);
+                }
+                else if (!playerHand.isValidPoint && dealer.GetHand(0).isValidPoint)
+                {
+                    isLose(playerHand);
+                }
+                else if (playerHand.isValidPoint && dealer.GetHand(0).isValidPoint)
+                {
+                    if (playerHand.Point > dealer.GetHand(0).Point)
+                    {
+                        isWin(playerHand);
+                    }
+                    else if (playerHand.Point < dealer.GetHand(0).Point)
+                    {
+                        isLose(playerHand);
+                    }
+                    else
+                    {
+                        isTie(playerHand);
+                    }
+                }
+                else
+                {
+                    isTie(playerHand);
+                }
+            }
+        }
+
+        private void isWin(Hand playerHand)
+        {
+            Console.WriteLine(playerHand.ToString());
+            int money = (int)playerHand.Bet * 2;
+            Console.WriteLine("   {0} win!!, get {1}",playerHand.Name,money);
+            playerHand.Player.AddMoney(money);
+            Console.WriteLine("{0}\n\n", playerHand.Player.Balance);
+        }
+
+        private void isLose(Hand playerHand)
+        {
+            Console.WriteLine(playerHand.ToString());
+            Console.WriteLine("   {0} loses a bet of {1}", playerHand.Name, playerHand.Bet);
+            Console.WriteLine("{0}\n\n",playerHand.Player.Balance);
+        }
+
+        private void isTie(Hand playerHand)
+        {
+            Console.WriteLine(playerHand.ToString());
+            Console.WriteLine("   {0} tie!!, get {1}", playerHand.Name, playerHand.Bet);
+            playerHand.Player.AddMoney((int)playerHand.Bet);
+            Console.WriteLine("{0}\n\n", playerHand.Player.Balance);
         }
 
         public void Play()
         {
-            //แจกไพ่คนละ 2 ใบ
-            for (int i = 0; i < 2; i++)
+            start:
+            if (initialAllPlayersHand())
             {
-                foreach (var player in players)
+                initialCard();
+                
+                moreCard();
+                battle();
+                Console.WriteLine("Play the next round? (y/n): ");
+                if (Console.ReadLine().ToLower()=="y")
                 {
-                    for (int j = 0; j < player.NumberOfHands; j++)
-                    {
-                        if (i==0)
-                        {
-                            numbersOfPlayerHandsInGame++;
-                        }
-                        player.GetHand(j).AddCard(deck.Deal());
-                    }
+                    goto start;
                 }
-                dealer.GetHand(0).AddCard(deck.Deal());
+                
             }
-            //
-            System.Console.WriteLine(dealer.GetHand(0).textShowOneCard);
-            //
-            int countStay = 0;
-            while (countStay < numbersOfPlayerHandsInGame)
-            {
-                foreach (var player in players)
-                {
-                    for (int j = 0; j < player.NumberOfHands; j++)
-                    {
-                        if (!player.GetHand(j).Stay)
-                        {
-                            bool decission = player.GetHand(j).isStay(Hand.PlayerLogic);
-                            if (decission == false)
-                            {
-                                player.GetHand(j).AddCard(deck.Deal());
-                            }
-                            else
-                            {
-                                countStay++;
-                            }
-                        }
-                    }
-                }
-            }
+        }
 
-            while (dealer.GetHand(0).Stay == false)
-            {
-                if (!dealer.GetHand(0).isStay(Hand.AILogic))
-                {
-                    dealer.GetHand(0).AddCard(deck.Deal());
-                }
-            }
-            //
-            System.Console.WriteLine("------------------------");
-            System.Console.WriteLine(dealer.GetHand(0).ToString());
-            System.Console.WriteLine("------------------------");
+        private bool initialAllPlayersHand()
+        {
+            allPlayerHands.Clear();
             foreach (var player in players)
             {
-                for (int i = 0; i < player.NumberOfHands; i++)
+                if (player.Money > 0)
                 {
-                    int playerPoint = player.GetHand(i).Point;
-                    int dealerPoint = dealer.GetHand(0).Point;
-                    string result = ComparePoint(playerPoint, dealerPoint);
-                    System.Console.WriteLine(player.GetHand(i).ToString());
-                    if (result == "tie")
+                    player.ResetHands();
+                    allPlayerHands.AddRange(player.getAllHands());
+                }
+                else{
+                    Console.WriteLine("\n{0} don't have money!!", player.Name);
+                    Console.WriteLine("{0} kick {1} out of the game.\n", dealer.Name, player.Name);
+                }
+            }
+            if (allPlayerHands.Count < 1)
+            {
+                Console.WriteLine("\nNo player in the game.\n");
+                return false;
+            }
+            bet();
+            return true;
+        }
+
+        private void bet()
+        {
+            Console.Clear();
+            foreach (Hand hand in allPlayerHands)
+            {
+                bet:
+                Console.WriteLine(hand.Player.Balance);
+                Console.WriteLine("{0}",hand.Name);
+                Console.Write("  How much do you want to bet? : ");
+                try
+                {
+                    uint money = uint.Parse(Console.ReadLine());
+                    if (!hand.SetBet(money))
                     {
-                        System.Console.WriteLine(player.GetHand(i).FullName + "Tie");
+                        throw new System.Exception();
                     }
-                    else if(result == "dealer win")
-                    {
-                        System.Console.WriteLine(player.GetHand(i).FullName + "Lose");
-                    }
-                    else
-                    {
-                        System.Console.WriteLine(player.GetHand(i).FullName + "Win");
-                    }
+                    Console.WriteLine("   {0} set bet: {1}\n\n",hand.Name,hand.Bet);
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("    invalid bet, try again");
+                    goto bet;
                 }
             }
         }
-        public bool isValidPoint(int point)
-        {
-            if (point >=17 && point <=21)
-            {
-                return true;
-            }
-            return false;
-        }
-        public string ComparePoint(int playerPoint,int dealerPoint)
-        {
-            //tie
-            if (isValidPoint(dealerPoint) && isValidPoint(playerPoint) && dealerPoint == playerPoint)
-            {
-                return "tie";
-            }
-            //dealer win
-            else if (isValidPoint(dealerPoint) && isValidPoint(playerPoint) && dealerPoint > playerPoint)
-            {
-                return "dealer win";
-            }
-            //player win
-            else if (isValidPoint(dealerPoint) && isValidPoint(playerPoint) && dealerPoint < playerPoint)
-            {
-                return "player win";
-            }
-            else if (isValidPoint(dealerPoint) && !isValidPoint(playerPoint))
-            {
-                return "dealer win";
-            }
-            else if (!isValidPoint(dealerPoint) && isValidPoint(playerPoint))
-            {
-                return "player win";
-            }
-            return "tie";
-        }
-        public void AllPlayerShowHands()
+
+        public void allPlayerShowHands()
         {
             string text = dealer.GetHand(0).ToString();
             System.Console.WriteLine(text);

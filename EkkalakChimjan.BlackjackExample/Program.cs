@@ -12,14 +12,13 @@ namespace EkkalakChimjan.BlackjackExample
         static void Main(string[] args)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-            Player dealer = new Player("Dealer");
-            List<Player> players = new List<Player>();
-            players.Add(new Player("Tuu"));
-            players.Add(new Player("Pom"));
-
+           
             Deck deck = new Deck();
-            Blackjack gamePlay = new Blackjack(dealer,players, deck);
-
+            Blackjack gamePlay = new Blackjack("dealer", deck);
+            Player tuu = new Player("Tuu");
+            tuu.AddHand();
+            gamePlay.AddPlayer(tuu);
+            gamePlay.AddPlayer(new Player("Pom"));
             gamePlay.Play();
             //gamePlay.AllPlayerShowHands();
         }

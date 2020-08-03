@@ -17,8 +17,20 @@ namespace EkkalakChimjan.BlackjackExample
             this.Money = money;
             handList = new List<Hand>
             {
-                new Hand(this,"1")
+                new Hand(this)
             };
+        }
+
+        public bool NeedMoreCard()
+        {
+            foreach (var hand in handList)
+            {
+                if (hand.Stay == false)
+                {
+
+                }
+            }
+            return false;
         }
 
         public void AddMoney(int amount)
@@ -28,10 +40,25 @@ namespace EkkalakChimjan.BlackjackExample
 
         public void AddHand()
         {
-            string name = (handList.Count + 1).ToString();
-            handList.Add(new Hand(this, name));
+            handList.Add(new Hand(this));
+            setHandsName();
         }
-
+        public void ResetHands()
+        {
+            foreach (var hand in handList)
+            {
+                hand.init();
+            }
+        }
+        private void setHandsName()
+        {
+            uint index = 1;
+            foreach (var hand in handList)
+            {
+                hand.Name = string.Format("{0}'s hand \"{1}\"", Name,index);
+                index++;
+            }
+        }
         public Hand GetHand(int index)
         {
             if (index < 0 && index > NumberOfHands - 1)
@@ -40,17 +67,9 @@ namespace EkkalakChimjan.BlackjackExample
             }
             return handList[index];
         }
-
-        public Hand GetHandNotSetBet()
+        public Hand[] getAllHands()
         {
-            foreach (var hand in handList)
-            {
-                if (hand.Bet == 0)
-                {
-                    return hand;
-                }
-            }
-            return null;
+            return handList.ToArray();
         }
 
         public override string ToString()
@@ -61,5 +80,8 @@ namespace EkkalakChimjan.BlackjackExample
             returnText += "=================";
             return returnText;
         }
+
+        public string Balance =>  string.Format(" {0}'s balance: {1}", Name, Money);
+
     }
 }
