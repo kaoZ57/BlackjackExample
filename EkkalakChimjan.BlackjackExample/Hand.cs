@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace EkkalakChimjan.BlackjackExample
 {
-    internal class Hand
+    public class Hand
     {
         private Player player;
         public Player Player => player;
@@ -111,12 +111,11 @@ namespace EkkalakChimjan.BlackjackExample
 
         public override string ToString()
         {
-            string line = "------------------------------";
-            string returnText = string.Format("{0}\n {1}\n", line,  Name);
+            string returnText = string.Format("\n------------------ Cards on {0} -----------------\n",  Name);
             returnText += string.Format("  -Bet : {0}\n  -Cards :", Bet);
             CardList.ForEach(card => returnText += string.Format("  {0},", card.ToString()));
             returnText = returnText.TrimEnd(',');
-            returnText += string.Format("\n  -Total :  {0} Points", Point);
+            returnText += string.Format("\n  -Total :  {0} Points.\n", Point);
             return returnText;
         }
 
@@ -124,8 +123,7 @@ namespace EkkalakChimjan.BlackjackExample
         {
             get
             {
-                string text = "------------------------------\n";
-                text += string.Format(" {0}\n", Name);
+                string text = string.Format("\n------------------ Cards on {0} -----------------\n", Name);
                 text += string.Format("  -Cards :  ");
                 for (int i = 0; i < CardList.Count; i++)
                 {
@@ -138,7 +136,7 @@ namespace EkkalakChimjan.BlackjackExample
                         text += ",[?]  ";
                     }
                 }
-                return text;
+                return text+"\n";
             }
         }
         

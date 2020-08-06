@@ -2,7 +2,7 @@
 
 namespace EkkalakChimjan.BlackjackExample
 {
-    internal class Player
+    public class Player
     {
         private List<Hand> handList;
 
@@ -37,6 +37,10 @@ namespace EkkalakChimjan.BlackjackExample
         {
             Money += amount;
         }
+        public void SetMoney(uint amount)
+        {
+            Money = (int)amount;
+        }
 
         public void AddHand()
         {
@@ -67,21 +71,21 @@ namespace EkkalakChimjan.BlackjackExample
             }
             return handList[index];
         }
-        public Hand[] getAllHands()
+        public Hand[] GetAllHand()
         {
             return handList.ToArray();
         }
 
         public override string ToString()
         {
-            string returnText = string.Format("=================\n Name:{0}\n", Name);
+            string returnText = string.Format("\n================= PLAYER DETAIL =================\n Name:{0}\n", Name);
             returnText += string.Format(" Balance: {0}\n", Money);
             returnText += string.Format(" Number of hands: {0}\n", NumberOfHands);
-            returnText += "=================";
+            returnText += "=================================================";
             return returnText;
         }
 
-        public string Balance =>  string.Format(" {0}'s balance: {1}", Name, Money);
+        public string Balance =>  string.Format("=================\n {0}'s Balance: {1}", Name, Money);
 
     }
 }
