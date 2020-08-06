@@ -26,6 +26,24 @@ namespace EkkalakChimjan.BlackjackExample
             players.Add(player);
         }
 
+        public void Play()
+        {
+        start:
+            if (initialAllPlayersHand())
+            {
+                initialCard();
+
+                moreCard();
+                battle();
+                Console.WriteLine("Play the next round? (y/n): ");
+                if (Console.ReadLine().ToLower() == "y")
+                {
+                    goto start;
+                }
+
+            }
+        }
+
         private void initialCard()
         {
             for (int i = 0; i < 2; i++)
@@ -119,24 +137,6 @@ namespace EkkalakChimjan.BlackjackExample
             Console.WriteLine("   {0} tie!!, get {1}", playerHand.Name, playerHand.Bet);
             playerHand.Player.AddMoney((int)playerHand.Bet);
             Console.WriteLine("{0}\n\n", playerHand.Player.Balance);
-        }
-
-        public void Play()
-        {
-            start:
-            if (initialAllPlayersHand())
-            {
-                initialCard();
-                
-                moreCard();
-                battle();
-                Console.WriteLine("Play the next round? (y/n): ");
-                if (Console.ReadLine().ToLower()=="y")
-                {
-                    goto start;
-                }
-                
-            }
         }
 
         private bool initialAllPlayersHand()
