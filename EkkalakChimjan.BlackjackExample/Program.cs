@@ -14,13 +14,34 @@ namespace EkkalakChimjan.BlackjackExample
             Console.OutputEncoding = System.Text.Encoding.UTF8;
            
             Deck deck = new Deck();
+            string addname;
+            int addmoney;
+
             Blackjack gamePlay = new Blackjack("dealer", deck);
-            Player tuu = new Player("Tuu");
-            tuu.AddHand();
-            gamePlay.AddPlayer(tuu);
-            gamePlay.AddPlayer(new Player("Pom"));
+
+            Console.Write("Enter Name Here = ");
+            addname = Console.ReadLine();
+
+        UP:
+            Console.Write("How much money is in your wallet? = ");
+            string InputNum = Console.ReadLine();
+            try
+            {
+                addmoney = Int32.Parse(InputNum);
+            }
+            catch (Exception)
+            {
+                goto UP;
+            }
+
+            Player Player1 = new Player(addname, addmoney);
+            Player1.AddHand();
+            gamePlay.AddPlayer(Player1);
+
+            //gamePlay.AddPlayer(new Player("Pom"));
             gamePlay.Play();
             //gamePlay.AllPlayerShowHands();
+
         }
     }
 }
